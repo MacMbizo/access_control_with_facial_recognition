@@ -19,6 +19,18 @@ class Ui_OutputDialog(QDialog):
         super(Ui_OutputDialog, self).__init__()
         loadUi("./outputwindow.ui", self)
 
+        titlelogo = self.findChild(QtWidgets.QLabel, 'picLabel')
+        pixmap = QPixmap('mcgs4-splash.png')
+        titlelogo.setPixmap(pixmap)
+        titlelogo.setScaledContents(True)
+        #self.resize(pixmap.width(), pixmap.height())
+        # label = QLabel(self)
+        # pixmap = QPixmap('cat.jpg')
+        # label.setPixmap(pixmap)
+        # label.setScaledContents(True)
+        # self.setCentralWidget(label)
+        # self.resize(pixmap.width(), pixmap.height())
+
         # Update time
         now = QDate.currentDate()
         current_date = now.toString('ddd dd MMMM yyyy')
@@ -227,4 +239,4 @@ class Ui_OutputDialog(QDialog):
 
         if self.closeButton.isChecked():
             self.close()
-# self.closeButton.clicked.connected(lambda: self.close())
+
