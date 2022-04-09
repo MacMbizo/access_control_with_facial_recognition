@@ -20,7 +20,7 @@ class Ui_OutputDialog(QDialog):
         loadUi("./outputwindow.ui", self)
 
         titlelogo = self.findChild(QtWidgets.QLabel, 'picLabel')
-        pixmap = QPixmap('mcgs4-splash.png')
+        pixmap = QPixmap('mcgs5-splash.png')
         titlelogo.setPixmap(pixmap)
         titlelogo.setScaledContents(True)
         #self.resize(pixmap.width(), pixmap.height())
@@ -235,7 +235,8 @@ class Ui_OutputDialog(QDialog):
             self.imgLabel.setScaledContents(True)
 
         self.closeButton = self.findChild(QtWidgets.QPushButton, 'clsBtn')
-        self.closeButton.setText('Close')
+        # self.closeButton.setText('Close')
+        self.closeButton.clicked.connect(self.close)
 
         if self.closeButton.isChecked():
             self.close()

@@ -14,7 +14,7 @@ class Ui_Dialog(QDialog):
         loadUi("mainwindow.ui", self)
 
         splashlogo = self.findChild(QtWidgets.QLabel, 'spLabel')
-        pixmap = QPixmap('mcgs1-splash.png')
+        pixmap = QPixmap('mcgs6-splash.png')
         splashlogo.setPixmap(pixmap)
         splashlogo.setScaledContents(True)
 
