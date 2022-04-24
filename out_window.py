@@ -1,4 +1,12 @@
-import click
+"""
+Good day sir/ma’am.
+
+If the libraries that I imported are showing that they are missing, I have attached the "venv" file with all the
+imported libraries (cv2, os, cvs, numpy, datetime, face_recognition, PyQt5).
+Thank you.
+"""
+
+
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot, QTimer, QDate, Qt, QRect
@@ -23,12 +31,6 @@ class Ui_OutputDialog(QDialog):
         pixmap = QPixmap('mcgs5-splash.png')
         titlelogo.setPixmap(pixmap)
         titlelogo.setScaledContents(True)
-        #self.resize(pixmap.width(), pixmap.height())
-        # label = QLabel(self)
-        # pixmap = QPixmap('cat.jpg')
-        # label.setPixmap(pixmap)
-        # label.setScaledContents(True)
-        # self.setCentralWidget(label)
         # self.resize(pixmap.width(), pixmap.height())
 
         # Update time
@@ -43,9 +45,9 @@ class Ui_OutputDialog(QDialog):
         self.show()
 
     @pyqtSlot()
-    def startVideo(self, camera_name): # camera source options
+    def startVideo(self, camera_name):  # camera source options
 
-        if len(camera_name) == 1:
+        if len(camera_name) == 1:  # this option is for an external usb web cam
             self.capture = cv2.VideoCapture(int(camera_name))
         else:
             self.capture = cv2.VideoCapture(camera_name)
@@ -72,24 +74,23 @@ class Ui_OutputDialog(QDialog):
             encodes_cur_frame = face_recognition.face_encodings(img, boxes)[0]
             # encode = face_recognition.face_encodings(img)[0]
             self.encode_list.append(encodes_cur_frame)
+            # print(encodes_cur_frame)
+            # print('Encoding Complete')
         self.timer.timeout.connect(self.update_frame)  # Connect timeout to the output function
         self.timer.start(50)  # emit the timeout() signal at x=40ms
+        print('Encoding Complete')
 
     def face_rec_(self, frame, encode_list_known, class_names):
-        """
-        :param frame: frame from camera
-        :param encode_list_known: known face encoding
-        :param class_names: known face names
-        :return:
-        """
+        # frame: frame from camera
+        # encode_list_known: known face encoding
+        # class_names: known face names
 
-        # csv
-
-        def log_movement(name): # name: detected face known or unknown one
+        # logging to csv
+        def log_movement(name):  # name: detected face known or unknown one
             if self.ClockInButton.isChecked():
                 self.ClockInButton.setEnabled(False)
                 with open('AccessControlLog.csv', 'a') as f:
-                    if (name != 'unknown'):
+                    if name != 'unknown':
                         print(name)
                         buttonReply = QMessageBox.question(self, f'Person identified as: {name}',
                                                            f'Are you Clocking {name} In?',
@@ -121,7 +122,7 @@ class Ui_OutputDialog(QDialog):
             elif self.ClockOutButton.isChecked():
                 self.ClockOutButton.setEnabled(False)
                 with open('AccessControlLog.csv', 'a') as f:
-                    if (name != 'unknown'):
+                    if name != 'unknown':
                         buttonReply = QMessageBox.question(self, f'Thank you for coming, {name}.', 'Logging Out?',
                                                            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                         if buttonReply == QMessageBox.Yes:
@@ -133,7 +134,7 @@ class Ui_OutputDialog(QDialog):
                             self.StatusLabel.setText('Clocked Out')
                             self.Time2 = datetime.datetime.now()
                             # print(self.Time2)
-
+                            # calculate time spent
                             self.ElapseList(name)
                             self.TimeList2.append(datetime.datetime.now())
                             CheckInTime = self.TimeList1[-1]
@@ -156,7 +157,7 @@ class Ui_OutputDialog(QDialog):
         # face recognition
         faces_cur_frame = face_recognition.face_locations(frame)
         encodes_cur_frame = face_recognition.face_encodings(frame, faces_cur_frame)
-        # count = 0
+        # face comparison
         for encodeFace, faceLoc in zip(encodes_cur_frame, faces_cur_frame):
             match = face_recognition.compare_faces(encode_list_known, encodeFace, tolerance=0.50)
             face_dis = face_recognition.face_distance(encode_list_known, encodeFace)
@@ -169,20 +170,18 @@ class Ui_OutputDialog(QDialog):
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
                 cv2.rectangle(frame, (x1, y2 - 20), (x2, y2), (255, 0, 0), cv2.FILLED)
                 cv2.putText(frame, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 255), 1)
+            else:
+                # name = class_names[best_match_index].upper()
+                y1, x2, y2, x1 = faceLoc
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                cv2.rectangle(frame, (x1, y2 - 20), (x2, y2), (255, 0, 0), cv2.FILLED)
+                cv2.putText(frame, 'Person Unknown', (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 255),
+                            1)
             log_movement(name)
 
         return frame
 
-    # def showdialog(self):
-    #     msg = QMessageBox()
-    #     # msg.setIcon(QMessageBox.Information)
-    #
-    #     msg.setText("This is a message box")
-    #     msg.setInformativeText("This is additional information")
-    #     msg.setWindowTitle("MessageBox demo")
-    #     msg.setDetailedText("The details are as follows:")
-    #     msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
+    # assign time slots to lists(TimeList1 and 2)
     def ElapseList(self, name):
         with open('AccessControlLog.csv', "r") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
@@ -235,9 +234,4 @@ class Ui_OutputDialog(QDialog):
             self.imgLabel.setScaledContents(True)
 
         self.closeButton = self.findChild(QtWidgets.QPushButton, 'clsBtn')
-        # self.closeButton.setText('Close')
         self.closeButton.clicked.connect(self.close)
-
-        if self.closeButton.isChecked():
-            self.close()
-
