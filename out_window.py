@@ -1,12 +1,3 @@
-"""
-Good day sir/ma’am.
-
-If the libraries that I imported are showing that they are missing, I have attached the "venv" file with all the
-imported libraries (cv2, os, cvs, numpy, datetime, face_recognition, PyQt5).
-Thank you.
-"""
-
-
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot, QTimer, QDate, Qt, QRect
